@@ -3,11 +3,6 @@ const pageDiv = document.querySelector('.page');
 const studentList = document.querySelectorAll(".student-item");
 const studentsPerPage = 10;
 const numberOfPages = Math.ceil(studentList.length/studentsPerPage); //determines how many pages are needed
-//page link section
-const paginationDiv = document.createElement('div');
-paginationDiv.className = 'pagination';
-const ul = document.createElement('ul');
-pageDiv.appendChild(paginationDiv);
 
 
 // // This  function displays a "page" or a list of ten students based which "page number" the user selected.
@@ -25,18 +20,23 @@ function showPage(pageNumber, studentList) {
  }
 
 function appendPageLinks(studentList) {
+  //page link section
+  const paginationDiv = document.createElement('div');
+  paginationDiv.className = 'pagination';
+  const ul = document.createElement('ul');
+  pageDiv.appendChild(paginationDiv);
         // for every page
           // add a page link to the page link section
       for (let i = 1; i <= numberOfPages; i++) {
         const li = document.createElement('li');
-        const anchor = document.createElement('a');
-        anchor.href = "#";
-        anchor.text = [i];
-        li.appendChild(anchor);
+        const link = document.createElement('a');
+        link.href = "#";
+        link.text = [i];
+        li.appendChild(link);
         ul.appendChild(li);
         // adds an event listener to each link created
         ul.addEventListener('click', (e) => {
-          if (e.target === anchor) {
+          if (e.target === link) {
             showPage(e.target.text, studentList); //calls the showpage function and determines the page number by using the anchor tag's text;
             //toggles 'active' class
             $('.pagination a').removeClass();
