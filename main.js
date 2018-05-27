@@ -75,20 +75,38 @@ const pageHeader = document.querySelector('.page-header');
 //create the necessary elements
 const searchDiv = document.createElement('div');
 searchDiv.classList.add('student-search');
-const input = document.createElement('input');
-input.type = 'text';
-input.placeholder = 'Search for students...';
+const searchInput = document.createElement('input');
+searchInput.type = 'text';
+searchInput.placeholder = 'Search a student';
 const searchButton = document.createElement('button');
 searchButton.innerHTML = 'Search'
-searchDiv.appendChild(input);
+searchDiv.appendChild(searchInput);
 searchDiv.appendChild(searchButton);
 
 pageHeader.appendChild(searchDiv);
 
-//convert the student list from a node lise to an array
+//extract the information needed from the array
+//this is what we need: 
+// studentDetails[0].children[1].innerHTML
+// "iboya vat"
+// studentDetails[0].children[2].innerHTML
+// "iboya.vat@example.com"
+
+//convert the student list from a node list to an array
 const studentDetails = document.querySelectorAll('.student-details');
 const newArr = Array.from(studentDetails);
-const studentData = newArr
-                .map(student => student.children)
-                .map(child => child);
-console.log(studentData);
+//extract the neccessary information, use an array of objects, each obj representing a student
+let studentData = [];
+newArr.forEach(el => {
+  studentData.push( {name: el.children[1].innerHTML, email: el.children[2].innerHTML} );
+});
+
+
+const test = function(){
+  console.log('action');
+}
+//button must filter student names when clicked
+searchButton.addEventListener('click', test);
+  //search box could have a keyup event listener that filters data in real time
+searchInput.addEventListener('keyup', test);
+
