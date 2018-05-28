@@ -4,7 +4,7 @@ const studentsPerPage = 10;
 const numberOfPages = Math.ceil(studentList.length/studentsPerPage); //determines how many pages are needed
 
 //display a "page" or a list of ten students based which page number the user selected.
-function showPage(pageNumber, students = studentList) {
+function showPage(pageNumber = 1, students = studentList) {
   //give a range of students we want displayed per page number
   const upperNum = studentsPerPage * pageNumber;
   const lowerNum = upperNum - studentsPerPage;
@@ -27,8 +27,8 @@ function appendPageLinks(numOfPages) {
   paginationDiv.appendChild(ul);
   pageDiv.appendChild(paginationDiv);
     
-//         for every page
-//           add a page link to the pagination Div
+      //for every page
+      //add a page link to the pagination Div
       for (let i = 1; i <= numberOfPages; i++) {
         const li = document.createElement('li');
         const link = document.createElement('a');
@@ -37,7 +37,7 @@ function appendPageLinks(numOfPages) {
         li.appendChild(link);
         ul.appendChild(li);
 
-        // will set the first link's class to "active" by default
+        //set the first link's class to "active" by default
         if (link.text == '1') {
           link.classList.add('active');
         }
@@ -57,13 +57,13 @@ function appendPageLinks(numOfPages) {
      });
  }
 
-showPage(1); // When the page loads, hide all but the first 10 students in the list.
+showPage(); // When the page loads, hide all but the first 10 students in the list.
 appendPageLinks(numberOfPages);
 
 
-//SEARCH BUTTON BEGIN 
+////////////////////////////////////SEARCH COMPONENT BEGIN ///////////////////////////////////////
 //create and append a search component to sort through a list of students
-//when search button is clicked us the value to display student names/emails that match the input value
+//when search button is clicked use the value to display student names/emails that match the input value
 const pageHeader = document.querySelector('.page-header');
 
 //create the necessary elements
@@ -73,50 +73,30 @@ const searchInput = document.createElement('input');
 searchInput.type = 'text';
 searchInput.placeholder = 'Search a student';
 const searchButton = document.createElement('button');
+searchButton.style.cursor = "pointer";
 searchButton.innerHTML = 'Search'
 searchDiv.appendChild(searchInput);
 searchDiv.appendChild(searchButton);
 
 pageHeader.appendChild(searchDiv);
 
-//extract the information needed from the array
-//this is what we need: 
-// studentDetails[0].children[1].innerHTML
-// "iboya vat"
-// studentDetails[0].children[2].innerHTML
-// "iboya.vat@example.com"
+//use the search input to sort through the studentList on keyup and on button click
+function displayStudents(){
+  const studentDetails = document.querySelectorAll('.student-details');
+  const filter = searchInput.value.toLowerCase();
 
-//convert the student list from a node list to an array
-const studentDetails = document.querySelectorAll('.student-details');
-const newArr = Array.from(studentDetails);
-//extract the neccessary information, use an array of objects, each obj representing a student
-let studentData = [];
-newArr.forEach(el => {
-  studentData.push( {name: el.children[1].innerHTML, email: el.children[2].innerHTML} );
-});
+  // Loop through all students, and hide those who don't match the search query
+  for (let i = 0; i < studentDetails.length; i++) {
+    const studentName = document.querySelectorAll('.student-details h3')[i].innerHTML;
+    const studentEmail = document.querySelectorAll('.student-details span')[i].innerHTML;
+    if (studentName.toLowerCase().indexOf(filter) > -1 || studentEmail.toLowerCase().indexOf(filter) > - 1 ) {
+      studentList[i].style.display = "";
+    } else {
+      studentList[i].style.display = "none";
+    }
+  }
 
-//pass in a word to match and the data it's being matched against
-const matchWord = function(wordToMatch, studentData) {
-  return studentData.filter(student => {
-    //figure out if the student name or email matches what was searched
-    const regex = new RegExp(wordToMatch, 'gi');
-    //if either of these is true it will return/filter them
-    return student.name.match(regex) || student.email.match(regex) ;
-  });
 }
 
-
-
-
-
-
-
-const displayMatches = function(){
-  const matchedArray = matchWord(this.value || searchInput.value, studentData);
-  console.log(matchedArray);
-}
-//button must filter student names when clicked
-searchButton.addEventListener('click', displayMatches);
-  //search box could have a keyup event listener that filters data in real time
-searchInput.addEventListener('keyup', displayMatches);
-
+searchButton.addEventListener('click', displayStudents);
+searchInput.addEventListener('keyup', displayStudents);
