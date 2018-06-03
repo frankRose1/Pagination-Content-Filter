@@ -1,19 +1,19 @@
 const pageDiv = document.querySelector('.page');
 const studentList = document.querySelectorAll(".student-item");
 const studentsPerPage = 10;
-const numberOfPages = Math.ceil(studentList.length/studentsPerPage); //determines how many pages are needed
+const numberOfPages = Math.ceil(studentList.length/studentsPerPage);
 
 //display a "page" or a list of ten students based which page number the user selected.
 function showPage(pageNumber = 1, students = studentList) {
-  //give a range of students we want displayed per page number
+  //set the range of students
   const upperNum = studentsPerPage * pageNumber;
   const lowerNum = upperNum - studentsPerPage;
 
   students.forEach( (student, i) => {
     student.style.display = 'none';
-    // if student should be on this page number
+    // if student should be on this page number, show the student
     if ( (i >= lowerNum) && (i < upperNum) ) {
-       student.style.display = "block";  // show the student
+       student.style.display = "block";  
      } 
   });
  }
@@ -43,13 +43,12 @@ function appendPageLinks(numOfPages) {
         }
 
         activeLink(link);
-      } //end of for loop
+      } //end for loop
 }
 
 //show the relevant page and toggle the 'active class'    
  function activeLink(link) {
      link.addEventListener('click', (e) => {
-         //show the page determined by the target link's text
          showPage(e.target.text);
          //toggle 'active' class as links are clicked
          document.querySelectorAll('.pagination a').forEach( link => link.classList.remove('active'));
@@ -62,8 +61,9 @@ appendPageLinks(numberOfPages);
 
 
 ////////////////////////////////////SEARCH COMPONENT BEGIN ///////////////////////////////////////
-//create and append a search component to sort through a list of students
-//when search button is clicked use the value to display student names/emails that match the input value
+//filter feature is working
+  //HANDLE NO RESULTS if no matches are found, alert the user in the HTML
+  //HANDLE pagination -> if 22 results are given, show 3 pages etc
 const pageHeader = document.querySelector('.page-header');
 
 //create the necessary elements
@@ -82,20 +82,22 @@ pageHeader.appendChild(searchDiv);
 
 //use the search input to sort through the studentList on keyup and on button click
 function displayStudents(){
+
   const studentDetails = document.querySelectorAll('.student-details');
   const filter = searchInput.value.toLowerCase();
-
   // Loop through all students, and hide those who don't match the search query
   for (let i = 0; i < studentDetails.length; i++) {
     const studentName = document.querySelectorAll('.student-details h3')[i].innerHTML;
     const studentEmail = document.querySelectorAll('.student-details span')[i].innerHTML;
-    if (studentName.toLowerCase().indexOf(filter) > -1 || studentEmail.toLowerCase().indexOf(filter) > - 1 ) {
-      studentList[i].style.display = "";
-    } else {
-      studentList[i].style.display = "none";
-    }
-  }
-
+    if (studentName.toLowerCase().indexOf(filter) > -1 || 
+        studentEmail.toLowerCase().indexOf(filter) > - 1 ) {
+            console.log(studentName, studentEmail);
+            studentList[i].style.display = "";
+          } else {
+            console.log(studentName, studentEmail);
+            studentList[i].style.display = "none";
+          }
+  } //end loop
 }
 
 searchButton.addEventListener('click', displayStudents);
