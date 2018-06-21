@@ -1,20 +1,35 @@
-//we want to implement pagination and show links based on the number of items
-    //pagination logic:
-        //we need a limit, number of students per page -> 10
-        //we need to skip certain items if they dont fall in the range
-            //(eg) on page 4? we want to show 11-20
-        //we also need to know what page we're currently on, default 1
-
-//we also want to add a search feature that will filter the list and display it on the page
-
 
 const studentList = document.querySelectorAll('.student-item'); //nodelist of all the students
 const totalStudents = studentList.length;
+const paginationDiv = document.querySelector('.pagination');
 
 //hide all of the students
 studentList.forEach(student => { 
     student.style.display = 'none';
 });
+
+//create a function that creates links in the DOM based on the number of pages needed
+function createLinks(){
+    const limit = 10; //students per page
+    const maxPages = Math.ceil(studentList.length / limit);
+    //create the html needed for the pagination links at bottom of page
+    const ul = document.createElement('ul');
+    paginationDiv.appendChild(ul);
+    //build up this html varialble with links
+    let html = ``;
+
+    //create a number of links equal to maxPages
+    for (let i = 1; i <= maxPages; i++) {
+        const link =  
+        `<li>
+            <a href="#" data-page="${i}">${i}</a>
+        </li>`;
+        html+= link;
+    }
+
+    //then use innerHTML to add them to the DOM
+    ul.innerHTML = html;
+}
 
 //default to page 1
 function pagination( page = 1, list = studentList){
@@ -38,36 +53,22 @@ function pagination( page = 1, list = studentList){
             el.style.display = 'none'
         }
     });// end loop
-
 }
 
-//create a function that creates links in the DOM based on the number of pages needed
-function createLinks(){
-    const limit = 10; //students per page
-    const maxPages = Math.ceil(studentList.length / limit);
-    //create the html needed for the pagination links at bottom of page
-    const paginationDiv = document.querySelector('.pagination');
-    const ul = document.createElement('ul');
-    paginationDiv.appendChild(ul);
-    //build up this html varialble with links
-    let html = ``;
-
-    //create a number of links equal to maxPages
-    for (let i = 1; i <= maxPages; i++) {
-        const link =  
-        `<li>
-            <a href="#" data-page="${i}">${i}</a>
-        </li>`;
-        html+= link;
-    }
-
-    //then use innerHTML to add them to the DOM
-    ul.innerHTML = html;
+function getPage(e){
+    if(!e.target.matches('a')) return; //skip if its not an anchor el
+    const page = parseInt(e.target.dataset.page);
+    pagination(page);
+    //toggle active class
+    const liNodes = paginationDiv.firstElementChild.childNodes;
+    liNodes.forEach(li => {
+        li.firstElementChild.classList.remove('active');
+    });
+    e.target.classList.add('active');
 }
 
-//implement pagination when a link is clicked
-
-
+//implement pagination when a link is clicked, need to delegate event since links are created dynamically
+paginationDiv.addEventListener('click', getPage);
 
 createLinks();
 pagination();
