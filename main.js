@@ -79,7 +79,6 @@ searchDiv.appendChild(searchInput);
 searchDiv.appendChild(searchButton);
 
 pageHeader.appendChild(searchDiv);
-
 //use the search input to sort through the studentList on keyup and on button click
 function displayStudents(){
 
@@ -87,8 +86,9 @@ function displayStudents(){
   const filter = searchInput.value.toLowerCase();
   // Loop through all students, and hide those who don't match the search query
   for (let i = 0; i < studentDetails.length; i++) {
-    const studentName = document.querySelectorAll('.student-details h3')[i].innerHTML;
-    const studentEmail = document.querySelectorAll('.student-details span')[i].innerHTML;
+    const studentName = document.querySelectorAll('.student-item h3')[i].innerHTML;
+    const studentEmail = document.querySelectorAll('.student-item span.email')[i].innerHTML;
+    
     if (studentName.toLowerCase().indexOf(filter) > -1 || 
         studentEmail.toLowerCase().indexOf(filter) > - 1 ) {
             console.log(studentName, studentEmail);
@@ -99,6 +99,7 @@ function displayStudents(){
           }
   } //end loop
 }
+//have to somehow figure out how to pass the list to our function
 
 searchButton.addEventListener('click', displayStudents);
 searchInput.addEventListener('keyup', displayStudents);
