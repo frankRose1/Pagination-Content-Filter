@@ -97,11 +97,23 @@ searchDiv.appendChild(searchButton);
     });
   }
 
-// //we need to fitler through the list of students and return a list of only students that match
-// function filterList(e, wordToMatch, list){
-//     if (!e.target.matches('input')) return; //skip if its not a search input
-//     console.log(e.target.value);
-// };
+  //whenever someone changes the value of the input, display the results
+  function displayResults(e){
+    if (!e.target.matches('input')) return; //skip if its not a search input
+    //show the results of the findMatches function
+    // const matchedArray = findMatches(e.target.value, studentList);
+    // console.log(matchedArray);
+    //we need to compare our matched array with out nodeList
+    studentList.forEach(el => {
+        if (el.children[0].children[1].innerText.includes(e.target.value) || 
+            el.children[0].children[2].innerText.includes(e.target.value)) {
+                el.style.display = 'block';
+        } else {
+                el.style.display = 'none';
+        }   
+    });
+   
+  }
 
-//listen on the searchDiv for an event
-// searchDiv.addEventListener('keyup', filterList);
+// delegate event to the search input
+searchDiv.addEventListener('keyup', displayResults);
