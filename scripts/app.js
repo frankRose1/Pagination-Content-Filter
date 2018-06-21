@@ -1,5 +1,4 @@
-
-const studentList = document.querySelectorAll('.student-item'); //nodelist of all the students
+const studentList = document.querySelectorAll('.student-item');
 const totalStudents = studentList.length;
 const paginationDiv = document.querySelector('.pagination');
 
@@ -12,13 +11,11 @@ studentList.forEach(student => {
 function createLinks(){
     const limit = 10; //students per page
     const maxPages = Math.ceil(studentList.length / limit);
-    //create the html needed for the pagination links at bottom of page
+    
     const ul = document.createElement('ul');
     paginationDiv.appendChild(ul);
-    //build up this html varialble with links
-    let html = ``;
+    let html = ``;  //build up this html varialble with links
 
-    //create a number of links equal to maxPages
     for (let i = 1; i <= maxPages; i++) {
         const link =  
         `<li>
@@ -38,11 +35,6 @@ function pagination( page = 1, list = studentList){
     const maxPages = Math.ceil(list.length / limit);
     const maxIndex = limit * maxPages;
     const skipIndex = (page * limit) - limit;
-                // 1  *   10   -  10   -> we skip 0( show the first 10 )
-                // 2 *     10  -   10  ->  we skip 10 (first 10 are skipped) how do we hide everything after 20?
-
-        // the second calucaltion is the limit scaling based on the page number subtracted from the max value
-        //so if page number is 3 then that calc = 30, and upper equals 30
     const upper = maxIndex - ( maxIndex - (limit * page) );
     //loop over the list and see where the students land
     list.forEach( (el, i) => {
@@ -72,3 +64,44 @@ paginationDiv.addEventListener('click', getPage);
 
 createLinks();
 pagination();
+
+// START SEARCH FEATURE
+//create the elements, append them to the page
+const searchDiv = document.querySelector('.student-search');
+const search =  document.createElement('input');
+search.type = 'text';
+search.placeholder = "Search for students..."
+const searchButton = document.createElement('button');
+searchButton.innerText = 'Search';
+searchButton.style.cursor  = 'pointer';
+searchDiv.appendChild(search);
+searchDiv.appendChild(searchButton);
+
+//this will filter down the data to only the word that we matched
+//studentList is not an array, its a nodelist, we need to convert it in order to use filter
+  function findMatches(wordToMatch, list){
+    let newArr = [];
+    newArr.push(...list);
+    //map over the array to get only the properties we need for this part
+    const studentArray = newArr.map(student => {
+        return {
+            name: student.children[0].children[1].innerText,
+            email: student.children[0].children[2].innerText
+        };
+    });
+    //we need to filter this list and return only items that match the searched word
+    return studentArray.filter(student => {
+        const regex = new RegExp(wordToMatch, 'ig');
+        //if the word(regex) matches the student name or email, return it
+        return student.name.match(regex) || student.email.match(regex);
+    });
+  }
+
+// //we need to fitler through the list of students and return a list of only students that match
+// function filterList(e, wordToMatch, list){
+//     if (!e.target.matches('input')) return; //skip if its not a search input
+//     console.log(e.target.value);
+// };
+
+//listen on the searchDiv for an event
+// searchDiv.addEventListener('keyup', filterList);
