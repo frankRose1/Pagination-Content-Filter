@@ -1,6 +1,9 @@
 const students = document.querySelectorAll('.student-item');
 const totalStudents = students.length;
+const limit = 8; //students per page
 const paginationDiv = document.querySelector('.pagination');
+const paginationUL = document.createElement('ul');
+paginationDiv.appendChild(paginationUL);
 const studentUL = document.querySelector('.student-list');
 
 //hide the students
@@ -29,30 +32,24 @@ studentUL.innerHTML = studentHTML;
 
 //create a function that creates links in the DOM based on the number of pages needed
 function createLinks(studentList){
-    const limit = 10; //students per page
     const maxPages = Math.ceil(studentList.length / limit);
-    
-    const ul = document.createElement('ul');
-    paginationDiv.appendChild(ul);
-    let html = ``;  //build up this html varialble with links
+    paginationUL.innerHTML= ''; //clear the HTML of the UL so that the search feature can add links dynamically
+    let html = ``;  //build this var up with links
 
     for (let i = 1; i <= maxPages; i++) {
         const link =  
         `<li>
-            <a href="#" data-page="${i}">${i}</a>
+            <a href="#" class=${i === 1 ? "active" : ""} data-page="${i}">${i}</a>
         </li>`;
         html+= link;
     }
 
     //then use innerHTML to add them to the DOM
-    ul.innerHTML = html;
+    paginationUL.innerHTML = html;
     pagination(1, studentList);
 }
 
-//default to page 1
 function pagination( page = 1, list){
-   
-    const limit = 10; //students per page
     const maxPages = Math.ceil(list.length / limit);
     const maxIndex = limit * maxPages;
     const skipIndex = (page * limit) - limit;
@@ -83,7 +80,12 @@ function getPage(e){
 
 //implement pagination when a link is clicked, need to delegate event since links are created dynamically
 paginationDiv.addEventListener('click', getPage);
-createLinks(students);
+
+createLinks(students); //create links on page load
+
+
+
+
 
 ///////////////////////////////////// START SEARCH FEATURE/////////////////////////////////////////////
 // create the elements, append them to the page
@@ -91,11 +93,7 @@ const searchDiv = document.querySelector('.student-search');
 const search =  document.createElement('input');
 search.type = 'text';
 search.placeholder = "Search for students..."
-const searchButton = document.createElement('button');
-searchButton.innerText = 'Search';
-searchButton.style.cursor  = 'pointer';
 searchDiv.appendChild(search);
-searchDiv.appendChild(searchButton);
 
 //this will filter down the data to only the word that we matched
   function findMatches(wordToMatch, list){
@@ -109,7 +107,7 @@ searchDiv.appendChild(searchButton);
 
   //whenever someone changes the value of the input, display the results
   function displayResults(e){
-    if (!e.target.matches('input')) return; //skip if its not a search input
+    if (!e.target.matches('input') ) return; //skip if its not an input
     // show the results of the findMatches function
     const matchedArray = findMatches(e.target.value, students);
     const html = matchedArray.map(student => {
@@ -127,7 +125,8 @@ searchDiv.appendChild(searchButton);
         `;
     }).join('');
     studentUL.innerHTML = html;
+    //create links based off of the filtered array length
+    createLinks(matchedArray);
   }
 
-// delegate event to the search input
-searchDiv.addEventListener('keyup', displayResults);
+searchDiv.addEventListener('keyup', displayResults); // delegate event to the search input
