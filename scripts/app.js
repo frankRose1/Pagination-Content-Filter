@@ -1,10 +1,11 @@
 const students = document.querySelectorAll('.student-item');
+const studentUL = document.querySelector('.student-list');
 const totalStudents = students.length;
-const limit = 8; //students per page
+const limit = 10; //students per page
 const paginationDiv = document.querySelector('.pagination');
 const paginationUL = document.createElement('ul');
 paginationDiv.appendChild(paginationUL);
-const studentUL = document.querySelector('.student-list');
+
 
 //hide the students
 students.forEach(student => {
@@ -39,29 +40,29 @@ function createLinks(studentList){
     for (let i = 1; i <= maxPages; i++) {
         const link =  
         `<li>
-            <a href="#" class=${i === 1 ? "active" : ""} data-page="${i}">${i}</a>
+            <a href="#" data-page=${i} ${i === 1 ? 'class=active' : ""}>${i}</a>
         </li>`;
         html+= link;
     }
 
-    //then use innerHTML to add them to the DOM
     paginationUL.innerHTML = html;
     pagination(1, studentList);
 }
 
-function pagination( page = 1, list){
-    const maxPages = Math.ceil(list.length / limit);
-    const maxIndex = limit * maxPages;
-    const skipIndex = (page * limit) - limit;
-    const upper = maxIndex - ( maxIndex - (limit * page) );
-    const listNodes = studentUL.children;
+function pagination( page, list){
+     const maxPages = Math.ceil(list.length / limit);
+     const maxIndex = limit * maxPages;
+     const skipIndex = (page * limit) - limit;
+     const upper = maxIndex - ( maxIndex - (limit * page) );
+     const studentNodes = studentUL.children;
+    console.log(studentNodes);
     //loop over the list and see where the students land
-    for (let i = 0; i < listNodes.length; i++) {
+    for (let i = 0; i < list.length; i++) {
         //if the index is greater than the skip, and lower than the upper value then we show the student, else we hide them
         if ( i >= skipIndex && i < upper) {
-            listNodes[i].style.display = 'block';
+            studentNodes[i].style.display = 'block';
         } else {
-            listNodes[i].style.display = 'none'
+            studentNodes[i].style.display = 'none';
         }
     } //end loop
 }
@@ -69,9 +70,10 @@ function pagination( page = 1, list){
 function getPage(e){
     if(!e.target.matches('a')) return; //skip if its not an anchor el
     const page = parseInt(e.target.dataset.page);
-    pagination(page, students);
-    //toggle active class
     const liNodes = paginationDiv.firstElementChild.childNodes;
+    const studentNodes = studentUL.children;
+    pagination(page, studentNodes);
+    //toggle active class
     liNodes.forEach(li => {
         li.firstElementChild.classList.remove('active');
     });
@@ -107,7 +109,7 @@ searchDiv.appendChild(search);
 
   //whenever someone changes the value of the input, display the results
   function displayResults(e){
-    if (!e.target.matches('input') ) return; //skip if its not an input
+    if (!e.target.matches('input')) return; //skip if its not an input
     // show the results of the findMatches function
     const matchedArray = findMatches(e.target.value, students);
     const html = matchedArray.map(student => {
