@@ -117,3 +117,25 @@ body{
       background-color: #4ba6c3;
       color: #fff;
     }
+
+
+  
+/* no results message */
+.no-results {
+  text-align: center;
+
+}
+
+.no-results i, .no-results p {
+  display: inline-block;
+  color: #D3D3D3;
+}
+
+.no-results i {
+  font-size: 55px;
+  margin-right: 20px;
+}
+
+.no-results p {
+  font-size: 40px;
+}

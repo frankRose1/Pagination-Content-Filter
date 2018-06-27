@@ -1,3 +1,5 @@
+(function() {
+
 const students = document.querySelectorAll('.student-item');
 const studentUL = document.querySelector('.student-list');
 const totalStudents = students.length;
@@ -5,7 +7,6 @@ const limit = 10; //students per page
 const paginationDiv = document.querySelector('.pagination');
 const paginationUL = document.createElement('ul');
 paginationDiv.appendChild(paginationUL);
-
 
 //hide the students
 students.forEach(student => {
@@ -28,14 +29,13 @@ const studentHTML = studentArray.map(student => {
     </li>
     `;
 }).join('');
-
 studentUL.innerHTML = studentHTML;
 
-//create a function that creates links in the DOM based on the number of pages needed
+//create links in the DOM based on the number of pages needed
 function createLinks(studentList){
     const maxPages = Math.ceil(studentList.length / limit);
     paginationUL.innerHTML= ''; //clear the HTML of the UL so that the search feature can add links dynamically
-    let html = ``;  //build this var up with links
+    let html = ``; 
 
     for (let i = 1; i <= maxPages; i++) {
         const link =  
@@ -86,25 +86,29 @@ paginationDiv.addEventListener('click', getPage);
 createLinks(students); //create links on page load
 
 
-
-
-
 ///////////////////////////////////// START SEARCH FEATURE/////////////////////////////////////////////
-// create the elements, append them to the page
 const searchDiv = document.querySelector('.student-search');
 const search =  document.createElement('input');
 search.type = 'text';
 search.placeholder = "Search for students..."
 searchDiv.appendChild(search);
 
-//this will filter down the data to only the word that we matched
+//filter down the data to only the word that we matched
   function findMatches(wordToMatch, list){
     const studentArr = Array.from(list);
-    //we need to filter this list and return only items that match the searched word
     return studentArr.filter(student => {
         const regex = new RegExp(wordToMatch, 'ig');
         return student.children[0].children[1].innerText.match(regex) || student.children[0].children[2].innerText.match(regex);
     });
+  }
+
+  function noResults(){
+      return `
+        <li class="no-results">
+            <i class="fas fa-exclamation-triangle"></i>
+            <p>Sorry, no results were found!</p>
+        </li>
+      `;
   }
 
   //whenever someone changes the value of the input, display the results
@@ -112,6 +116,11 @@ searchDiv.appendChild(search);
     if (!e.target.matches('input')) return; //skip if its not an input
     // show the results of the findMatches function
     const matchedArray = findMatches(e.target.value, students);
+    //if no results are found, dislay a message for the user
+     if (!matchedArray.length) {
+         studentUL.innerHTML = noResults();
+         return; //exit
+     }
     const html = matchedArray.map(student => {
         return `
           <li class="student-item cf">
@@ -132,3 +141,5 @@ searchDiv.appendChild(search);
   }
 
 searchDiv.addEventListener('keyup', displayResults); // delegate event to the search input
+
+})();
