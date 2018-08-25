@@ -1,3 +1,8 @@
+# mock files
+student-list-examples/
+example-exceeds.html
+example-meets.html
+
 # Logs
 logs
 *.log
