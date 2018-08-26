@@ -1,7 +1,4 @@
-# mock files
-student-list-examples/
-example-exceeds.html
-example-meets.html
+mock-files/*
 
 # Logs
 logs
